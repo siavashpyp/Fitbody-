@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Fit Body Pro | اپ حرفه‌ای باشگاه</title>
+<link rel="manifest" href="data:application/json,{"name":"Fit Body Pro","short_name":"FitBody","start_url":".","display":"standalone","background_color":"#070b14","theme_color":"#22c55e","lang":"fa"}">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:#070b14; --sidebar:#0c1220; --panel:#111827; --panel2:#0f1623;
+  --border:rgba(255,255,255,.07); --text:#f1f5f9; --muted:#94a3b8; --dim:#64748b;
+  --green:#22c55e; --cyan:#06b6d4; --purple:#a855f7; --orange:#f97316; --red:#ef4444; --yellow:#eab308;
+  --radius:16px; --ease:cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"] {
+  --bg:#f8fafc; --sidebar:#fff; --panel:#fff; --panel2:#f1f5f9;
+  --border:rgba(0,0,0,.08); --text:#0f172a; --muted:#64748b; --dim:#94a3b8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Vazirmatn',system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; line-height:1.6; }
+button,input,select,textarea { font-family:inherit; }
+.app { display:flex; min-height:100vh; }
+
+/* Sidebar */
+.sidebar {
+  width:250px; background:var(--sidebar); border-left:1px solid var(--border);
+  display:flex; flex-direction:column; position:fixed; top:0; right:0; bottom:0; z-index:50;
+  transition:transform .3s var(--ease);
+}
+.brand { display:flex; align-items:center; gap:12px; padding:22px 18px; border-bottom:1px solid var(--border); }
+.brand-icon {
+  width:42px; height:42px; border-radius:12px;
+  background:linear-gradient(135deg,#22c55e,#06b6d4);
+  display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#000;
+  box-shadow:0 0 20px rgba(34,197,94,.35);
+}
+.brand-name { font-weight:800; font-size:1.15rem; }
+.brand-tag { font-size:.72rem; color:var(--muted); }
+.nav { flex:1; padding:14px 10px; display:flex; flex-direction:column; gap:4px; overflow-y:auto; }
+.nav-btn {
+  display:flex; align-items:center; gap:11px; padding:12px 14px; border:none; border-radius:11px;
+  background:transparent; color:var(--muted); font-size:.92rem; font-weight:600; cursor:pointer;
+  transition:all .2s; text-align:right; width:100%;
+}
+.nav-btn i { width:20px; text-align:center; }
+.nav-btn:hover { background:rgba(255,255,255,.04); color:var(--text); }
+.nav-btn.active {
+  background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(6,182,212,.08));
+  color:var(--green); box-shadow:inset 3px 0 0 var(--green);
+}
+.badge-new {
+  margin-right:auto; background:linear-gradient(135deg,#a855f7,#ec4899);
+  color:#fff; font-size:.62rem; padding:2px 7px; border-radius:20px; font-weight:700;
+}
+.sidebar-foot { padding:12px; border-top:1px solid var(--border); }
+.user-chip {
+  display:flex; align-items:center; gap:10px; padding:10px; background:rgba(255,255,255,.03);
+  border-radius:12px; border:1px solid var(--border);
+}
+.user-av {
+  width:36px; height:36px; border-radius:10px;
+  background:linear-gradient(135deg,#06b6d4,#a855f7);
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* Main */
+.main { flex:1; margin-right:250px; display:flex; flex-direction:column; min-height:100vh; }
+.topbar {
+  height:58px; display:flex; align-items:center; gap:14px; padding:0 22px;
+  border-bottom:1px solid var(--border); background:rgba(7,11,20,.85); backdrop-filter:blur(12px);
+  position:sticky; top:0; z-index:40;
+}
+[data-theme="light"] .topbar { background:rgba(248,250,252,.9); }
+.mobile-menu { display:none; background:none; border:none; color:var(--text); font-size:1.25rem; cursor:pointer; }
+.page-title { font-weight:700; font-size:1.1rem; }
+.top-actions { margin-right:auto; display:flex; gap:8px; }
+.icon-btn {
+  width:38px; height:38px; border-radius:10px; border:1px solid var(--border);
+  background:rgba(255,255,255,.04); color:var(--muted); cursor:pointer; transition:.2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.icon-btn:hover { color:var(--text); background:rgba(255,255,255,.08); }
+.content { padding:22px; flex:1; }
+.section { display:none; animation:fadeIn .35s var(--ease); }
+.section.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* Components */
+.btn {
+  display:inline-flex; align-items:center; gap:7px; padding:11px 18px; border:none; border-radius:11px;
+  font-size:.9rem; font-weight:700; cursor:pointer; transition:all .2s;
+}
+.btn-primary { background:linear-gradient(135deg,#22c55e,#16a34a); color:#000; box-shadow:0 4px 18px rgba(34,197,94,.3); }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(34,197,94,.4); }
+.btn-ghost { background:rgba(255,255,255,.05); color:var(--text); border:1px solid var(--border); }
+.btn-ghost:hover { background:rgba(255,255,255,.1); }
+.btn-danger { background:rgba(239,68,68,.12); color:var(--red); border:1px solid rgba(239,68,68,.25); }
+.btn-danger:hover { background:var(--red); color:#fff; }
+.btn-sm { padding:7px 12px; font-size:.8rem; }
+.btn-full { width:100%; justify-content:center; }
+.panel {
+  background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px; margin-bottom:16px;
+}
+.panel-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+.panel-head h3 { font-size:1rem; font-weight:700; display:flex; align-items:center; gap:8px; }
+.panel-head h3 i { color:var(--green); }
+.grid-2 { display:grid; grid-template-columns:1.4fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+
+/* Dashboard */
+.hero {
+  background:linear-gradient(135deg,#0f172a,#0c1a2e 50%,#0a1628);
+  border:1px solid var(--border); border-radius:20px; padding:28px 32px;
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; position:relative; overflow:hidden;
+}
+[data-theme="light"] .hero { background:linear-gradient(135deg,#ecfdf5,#e0f2fe); }
+.hero h1 { font-size:1.7rem; font-weight:800; margin-bottom:6px; }
+.hero p { color:var(--muted); margin-bottom:18px; }
+.hero-actions { display:flex; gap:10px; flex-wrap:wrap; }
+.ring-wrap { width:120px; height:120px; position:relative; }
+.ring-wrap svg { width:100%; height:100%; transform:rotate(-90deg); }
+.ring-bg { fill:none; stroke:rgba(255,255,255,.06); stroke-width:9; }
+.ring-fill { fill:none; stroke:#22c55e; stroke-width:9; stroke-linecap:round; stroke-dasharray:327; stroke-dashoffset:327; transition:stroke-dashoffset 1s var(--ease); }
+.ring-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.ring-center span { font-size:1.4rem; font-weight:800; }
+.ring-center small { font-size:.7rem; color:var(--muted); }
+
+.stat-box {
+  background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px; display:flex; align-items:center; gap:12px; transition:all .25s;
+}
+.stat-box:hover { transform:translateY(-3px); border-color:rgba(34,197,94,.25); }
+.stat-ic {
+  width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.15rem;
+}
+.stat-ic.fire { background:rgba(249,115,22,.15); color:#f97316; }
+.stat-ic.cal { background:rgba(34,197,94,.15); color:#22c55e; }
+.stat-ic.vol { background:rgba(6,182,212,.15); color:#06b6d4; }
+.stat-ic.str { background:rgba(168,85,247,.15); color:#a855f7; }
+.stat-num { font-size:1.5rem; font-weight:800; letter-spacing:-.5px; line-height:1.2; }
+.stat-lbl { font-size:.75rem; color:var(--muted); }
+
+/* Forms */
+.field { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.field label { font-size:.78rem; color:var(--muted); font-weight:600; }
+.field input,.field select,.field textarea {
+  background:var(--bg); border:1px solid var(--border); border-radius:10px;
+  padding:11px 13px; color:var(--text); font-size:.9rem; transition:border .2s,box-shadow .2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus {
+  outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(34,197,94,.2);
+}
+.form-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; }
+
+/* Lists */
+.item {
+  background:var(--bg); border:1px solid var(--border); border-radius:12px;
+  padding:12px 14px; display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:8px; transition:all .2s; gap:10px;
+}
+.item:hover { border-color:rgba(34,197,94,.3); }
+.item h4 { font-size:.95rem; font-weight:700; }
+.meta { display:flex; flex-wrap:wrap; gap:8px; font-size:.75rem; color:var(--muted); margin-top:3px; }
+.tag {
+  background:rgba(34,197,94,.15); color:var(--green); padding:2px 8px;
+  border-radius:20px; font-size:.7rem; font-weight:700;
+}
+.empty { text-align:center; padding:36px 16px; color:var(--dim); }
+.empty i { font-size:2.2rem; opacity:.35; margin-bottom:10px; display:block; }
+
+/* Programs */
+.prog-card {
+  background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:18px; transition:all .25s; cursor:pointer;
+}
+.prog-card:hover { border-color:rgba(34,197,94,.35); transform:translateY(-3px); }
+.prog-card h4 { font-size:1.05rem; margin-bottom:6px; }
+.prog-card p { font-size:.82rem; color:var(--muted); margin-bottom:12px; }
+.prog-meta { display:flex; gap:10px; font-size:.75rem; color:var(--dim); margin-bottom:12px; }
+
+/* Live workout / timer */
+.timer-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:200;
+  align-items:center; justify-content:center; backdrop-filter:blur(6px);
+}
+.timer-overlay.show { display:flex; }
+.timer-box {
+  background:var(--panel); border:1px solid var(--border); border-radius:24px;
+  padding:36px; text-align:center; min-width:280px; box-shadow:0 25px 60px rgba(0,0,0,.5);
+}
+.timer-num { font-size:4rem; font-weight:900; color:var(--green); letter-spacing:-2px; line-height:1; margin:16px 0; }
+.timer-label { color:var(--muted); font-size:.9rem; }
+
+.live-bar {
+  display:none; position:fixed; bottom:0; left:0; right:0; z-index:90;
+  background:var(--panel); border-top:1px solid var(--border); padding:12px 20px;
+  box-shadow:0 -8px 30px rgba(0,0,0,.3);
+}
+.live-bar.show { display:block; }
+.live-inner { max-width:900px; margin:0 auto; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.live-info { flex:1; min-width:140px; }
+.live-info strong { display:block; font-size:.95rem; }
+.live-info span { font-size:.78rem; color:var(--muted); }
+
+/* Exercise library */
+.ex-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+.ex-card {
+  background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:16px; transition:.2s;
+}
+.ex-card:hover { border-color:rgba(34,197,94,.3); }
+.ex-card h4 { font-size:.95rem; margin-bottom:4px; }
+.ex-card .muscles { font-size:.75rem; color:var(--cyan); margin-bottom:8px; }
+.ex-card p { font-size:.8rem; color:var(--muted); }
+
+/* Calendar */
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.cal-day {
+  aspect-ratio:1; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font-size:.8rem; font-weight:600; background:var(--bg); border:1px solid var(--border); color:var(--dim);
+}
+.cal-day.done { background:rgba(34,197,94,.2); color:var(--green); border-color:rgba(34,197,94,.4); }
+.cal-day.today { box-shadow:0 0 0 2px var(--cyan); }
+.cal-head { text-align:center; font-size:.7rem; color:var(--muted); font-weight:600; padding:4px; }
+
+/* PR */
+.pr-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 0; border-bottom:1px solid var(--border);
+}
+.pr-item:last-child { border-bottom:none; }
+.pr-val { font-weight:800; color:var(--green); font-size:1.1rem; }
+
+/* Chat */
+.chat-app {
+  background:var(--panel); border:1px solid var(--border); border-radius:18px;
+  display:flex; flex-direction:column; height:calc(100vh - 140px); min-height:480px; overflow:hidden;
+}
+.chat-head {
+  display:flex; align-items:center; gap:12px; padding:14px 18px;
+  border-bottom:1px solid var(--border); background:rgba(0,0,0,.15);
+}
+.coach-av {
+  width:42px; height:42px; border-radius:12px;
+  background:linear-gradient(135deg,#22c55e,#06b6d4);
+  display:flex; align-items:center; justify-content:center; color:#000; font-size:1.15rem;
+}
+.dot { width:7px; height:7px; background:var(--green); border-radius:50%; display:inline-block; box-shadow:0 0 6px var(--green); }
+.chat-body { flex:1; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:12px; }
+.msg { max-width:82%; animation:fadeIn .3s; }
+.msg.user { align-self:flex-end; }
+.bubble {
+  padding:12px 15px; border-radius:14px; font-size:.9rem; line-height:1.7;
+  background:var(--bg); border:1px solid var(--border);
+}
+.msg.user .bubble { background:linear-gradient(135deg,#166534,#14532d); border-color:rgba(34,197,94,.2); }
+.chat-foot { padding:12px 16px; border-top:1px solid var(--border); }
+.chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+.chip {
+  background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--muted);
+  padding:5px 12px; border-radius:20px; font-size:.75rem; font-weight:600; cursor:pointer; transition:.2s;
+}
+.chip:hover { border-color:var(--green); color:var(--green); }
+.input-bar { display:flex; gap:8px; }
+.input-bar input {
+  flex:1; background:var(--bg); border:1px solid var(--border); border-radius:12px;
+  padding:12px 15px; color:var(--text); font-size:.9rem;
+}
+.input-bar input:focus { outline:none; border-color:var(--green); }
+.input-bar button {
+  width:46px; height:46px; border-radius:12px; border:none;
+  background:linear-gradient(135deg,#22c55e,#16a34a); color:#000; font-size:1rem; cursor:pointer;
+}
+
+/* Settings */
+.set-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 0; border-bottom:1px solid var(--border);
+}
+.set-row:last-child { border-bottom:none; }
+.switch {
+  width:46px; height:26px; background:var(--dim); border-radius:20px; position:relative; cursor:pointer; transition:.2s;
+}
+.switch.on { background:var(--green); }
+.switch::after {
+  content:''; position:absolute; width:20px; height:20px; background:#fff; border-radius:50%;
+  top:3px; right:3px; transition:.2s;
+}
+.switch.on::after { right:23px; }
+
+/* Charts */
+.chart-box { height:260px; position:relative; }
+.mini-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.mini-stat {
+  background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center;
+}
+.mini-stat .v {
+  font-size:1.3rem; font-weight:800;
+  background:linear-gradient(135deg,#22c55e,#06b6d4);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.mini-stat .l { font-size:.72rem; color:var(--muted); margin-top:2px; }
+
+.goal-bar {
+  height:10px; background:var(--bg); border-radius:10px; overflow:hidden; margin-top:8px;
+}
+.goal-fill { height:100%; background:linear-gradient(90deg,#22c55e,#06b6d4); border-radius:10px; transition:width .6s; }
+
+/* Responsive */
+@media (max-width:1024px) {
+  .grid-2,.grid-3 { grid-template-columns:1fr; }
+  .grid-4 { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:768px) {
+  .sidebar { transform:translateX(100%); }
+  .sidebar.open { transform:translateX(0); }
+  .main { margin-right:0; }
+  .mobile-menu { display:block; }
+  .hero { flex-direction:column; gap:20px; text-align:center; }
+  .hero-actions { justify-content:center; }
+  .grid-4 { grid-template-columns:1fr 1fr; }
+  .content { padding:14px; }
+  .chat-app { height:calc(100vh - 110px); }
+  .live-bar { padding-bottom:max(12px,env(safe-area-inset-bottom)); }
+}
+@media (max-width:480px) { .grid-4 { grid-template-columns:1fr; } }
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-thumb { background:rgba(34,197,94,.3); border-radius:10px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon"><i class="fas fa-bolt"></i></div>
+      <div>
+        <div class="brand-name">Fit Body</div>
+        <div class="brand-tag">اپ حرفه‌ای باشگاه</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn active" data-s="dashboard"><i class="fas fa-border-all"></i> داشبورد</button>
+      <button class="nav-btn" data-s="live"><i class="fas fa-play-circle"></i> تمرین زنده</button>
+      <button class="nav-btn" data-s="workouts"><i class="fas fa-dumbbell"></i> ثبت تمرین</button>
+      <button class="nav-btn" data-s="programs"><i class="fas fa-clipboard-list"></i> برنامه‌ها</button>
+      <button class="nav-btn" data-s="library"><i class="fas fa-book"></i> کتابخانه حرکات</button>
+      <button class="nav-btn" data-s="progress"><i class="fas fa-chart-line"></i> پیشرفت</button>
+      <button class="nav-btn" data-s="body"><i class="fas fa-ruler"></i> بدن و اندازه‌ها</button>
+      <button class="nav-btn" data-s="coach"><i class="fas fa-robot"></i> مربی AI <span class="badge-new">AI</span></button>
+      <button class="nav-btn" data-s="settings"><i class="fas fa-cog"></i> تنظیمات</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="user-chip">
+        <div class="user-av"><i class="fas fa-user"></i></div>
+        <div>
+          <div style="font-weight:700;font-size:.88rem" id="userName">قهرمان</div>
+          <div style="font-size:.72rem;color:var(--muted)" id="userLevel">سطح: متوسط</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="mobile-menu" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <div class="page-title" id="pageTitle">داشبورد</div>
+      <div class="top-actions">
+        <button class="icon-btn" id="themeBtn" title="تم"><i class="fas fa-moon"></i></button>
+        <button class="icon-btn" id="notifBtn" title="یادآوری"><i class="fas fa-bell"></i></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="section active">
+        <div class="hero">
+          <div>
+            <h1 id="greet">سلام قهرمان 👋</h1>
+            <p>امروز آماده‌ای بدنت رو به چالش بکشی؟</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="showS('live')"><i class="fas fa-play"></i> شروع تمرین زنده</button>
+              <button class="btn btn-ghost" onclick="showS('coach')"><i class="fas fa-comments"></i> چت با مربی</button>
+            </div>
+          </div>
+          <div class="ring-wrap">
+            <svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fill" id="weekRing" cx="60" cy="60" r="52"/></svg>
+            <div class="ring-center"><span id="weekPct">0%</span><small>هدف هفته</small></div>
+          </div>
+        </div>
+        <div class="grid-4" style="margin-bottom:18px">
+          <div class="stat-box"><div class="stat-ic fire"><i class="fas fa-fire"></i></div><div><div class="stat-num" id="stTotal">0</div><div class="stat-lbl">کل تمرینات</div></div></div>
+          <div class="stat-box"><div class="stat-ic cal"><i class="fas fa-calendar-check"></i></div><div><div class="stat-num" id="stWeek">0</div><div class="stat-lbl">این هفته</div></div></div>
+          <div class="stat-box"><div class="stat-ic vol"><i class="fas fa-weight-hanging"></i></div><div><div class="stat-num" id="stVol">0</div><div class="stat-lbl">حجم کل (kg)</div></div></div>
+          <div class="stat-box"><div class="stat-ic str"><i class="fas fa-bolt"></i></div><div><div class="stat-num" id="stStreak">0</div><div class="stat-lbl">روز متوالی</div></div></div>
+        </div>
+        <div class="panel" style="margin-bottom:16px">
+          <div class="panel-head"><h3><i class="fas fa-bullseye"></i> هدف هفتگی</h3><span id="goalText" style="font-size:.85rem;color:var(--muted)">0 / 4 جلسه</span></div>
+          <div class="goal-bar"><div class="goal-fill" id="goalFill" style="width:0%"></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><h3><i class="fas fa-history"></i> آخرین تمرینات</h3></div>
+            <div id="recentList"><div class="empty"><i class="fas fa-dumbbell"></i><p>هنوز تمرینی ثبت نشده</p></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3><i class="fas fa-trophy"></i> رکوردهای اخیر</h3></div>
+            <div id="prPreview"><div class="empty"><i class="fas fa-medal"></i><p>رکوردی ثبت نشده</p></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIVE WORKOUT -->
+      <section id="live" class="section">
+        <div class="panel">
+          <div class="panel-head"><h3><i class="fas fa-play-circle"></i> تمرین زنده</h3></div>
+          <p style="color:var(--muted);margin-bottom:14px;font-size:.9rem">یک برنامه انتخاب کن یا حرکت‌ها رو دستی اضافه کن، بعد جلسه رو شروع کن.</p>
+          <div class="form-row">
+            <div class="field"><label>برنامه</label>
+              <select id="liveProg"><option value="">— دستی —</option></select>
+            </div>
+            <div class="field"><label>استراحت پیش‌فرض (ثانیه)</label>
+              <input type="number" id="restSec" value="90" min="15" max="300">
+            </div>
+          </div>
+          <div id="liveQueue" style="margin:12px 0"></div>
+          <div class="form-row">
+            <div class="field"><label>حرکت</label><input type="text" id="lqEx" placeholder="مثلاً پرس سینه"></div>
+            <div class="field"><label>ست</label><input type="number" id="lqSets" value="3" min="1"></div>
+            <div class="field"><label>تکرار هدف</label><input type="number" id="lqReps" value="10" min="1"></div>
+            <div class="field"><label>وزن</label><input type="number" id="lqW" value="20" min="0" step="0.5"></div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="addToQueue()"><i class="fas fa-plus"></i> افزودن به صف</button>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="btnStartLive" onclick="startLive()"><i class="fas fa-play"></i> شروع جلسه</button>
+            <button class="btn btn-danger btn-sm" onclick="clearQueue()">پاک کردن صف</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- WORKOUTS LOG -->
+      <section id="workouts" class="section">
+        <div class="panel">
+          <div class="panel-head"><h3><i class="fas fa-plus-circle"></i> ثبت سریع تمرین</h3></div>
+          <form id="wForm">
+            <div class="form-row">
+              <div class="field"><label>تاریخ</label><input type="date" id="wDate" required></div>
+              <div class="field"><label>عضله</label>
+                <select id="wMuscle" required>
+                  <option value="">انتخاب</option>
+                  <option>سینه</option><option>پشت</option><option>شانه</option><option>بازو</option>
+                  <option>پا</option><option>شکم</option><option>فول بادی</option><option>کاردیو</option>
+                </select>
+              </div>
+              <div class="field" style="grid-column:span 2"><label>حرکت</label><input type="text" id="wEx" required placeholder="پرس سینه هالتر"></div>
+              <div class="field"><label>ست</label><input type="number" id="wSets" value="3" min="1" required></div>
+              <div class="field"><label>تکرار</label><input type="number" id="wReps" value="10" min="1" required></div>
+              <div class="field"><label>وزن (kg)</label><input type="number" id="wWeight" value="20" min="0" step="0.5" required></div>
+            </div>
+            <div class="field"><label>یادداشت</label><textarea id="wNotes" rows="2"></textarea></div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> ذخیره</button>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3><i class="fas fa-list"></i> تاریخچه</h3>
+            <button class="btn btn-sm btn-danger" onclick="clearAllW()"><i class="fas fa-trash"></i> پاک همه</button>
+          </div>
+          <div id="wList"></div>
+        </div>
+      </section>
+
+      <!-- PROGRAMS -->
+      <section id="programs" class="section">
+        <div class="panel-head" style="margin-bottom:14px"><h3 style="font-size:1.15rem"><i class="fas fa-clipboard-list" style="color:var(--green)"></i> برنامه‌های آماده</h3></div>
+        <div class="grid-3" id="progGrid"></div>
+      </section>
+
+      <!-- LIBRARY -->
+      <section id="library" class="section">
+        <div class="panel" style="margin-bottom:14px">
+          <input type="text" id="libSearch" placeholder="جستجوی حرکت..." style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text)">
+        </div>
+        <div class="ex-grid" id="libGrid"></div>
+      </section>
+
+      <!-- PROGRESS -->
+      <section id="progress" class="section">
+        <div class="panel">
+          <div class="panel-head"><h3><i class="fas fa-chart-line"></i> حجم تمرین</h3></div>
+          <div class="chart-box"><canvas id="volChart"></canvas></div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><h3><i class="fas fa-pie-chart"></i> توزیع عضلات</h3></div>
+            <div class="chart-box"><canvas id="musChart"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3><i class="fas fa-trophy"></i> رکوردهای شخصی (PR)</h3></div>
+            <div id="prList"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3><i class="fas fa-calendar"></i> تقویم این ماه</h3></div>
+          <div class="cal-grid" id="calHead"></div>
+          <div class="cal-grid" id="calBody" style="margin-top:4px"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3><i class="fas fa-share"></i> خروجی و اشتراک</h3>
+          </div>
+          <button class="btn btn-ghost" onclick="exportSummary()"><i class="fas fa-download"></i> کپی خلاصه پیشرفت</button>
+        </div>
+      </section>
+
+      <!-- BODY -->
+      <section id="body" class="section">
+        <div class="panel">
+          <div class="panel-head"><h3><i class="fas fa-weight"></i> ثبت اندازه‌ها</h3></div>
+          <div class="form-row">
+            <div class="field"><label>تاریخ</label><input type="date" id="bDate"></div>
+            <div class="field"><label>وزن بدن (kg)</label><input type="number" id="bWeight" step="0.1" placeholder="75"></div>
+            <div class="field"><label>دور سینه</label><input type="number" id="bChest" step="0.1"></div>
+            <div class="field"><label>دور بازو</label><input type="number" id="bArm" step="0.1"></div>
+            <div class="field"><label>دور کمر</label><input type="number" id="bWaist" step="0.1"></div>
+            <div class="field"><label>دور ران</label><input type="number" id="bThigh" step="0.1"></div>
+          </div>
+          <button class="btn btn-primary" onclick="saveBody()"><i class="fas fa-save"></i> ذخیره</button>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3><i class="fas fa-history"></i> تاریخچه اندازه‌ها</h3></div>
+          <div id="bodyList"></div>
+        </div>
+      </section>
+
+      <!-- COACH -->
+      <section id="coach" class="section">
+        <div class="chat-app">
+          <div class="chat-head">
+            <div class="coach-av"><i class="fas fa-robot"></i></div>
+            <div>
+              <div style="font-weight:700">مربی Fit Body</div>
+              <div style="font-size:.78rem;color:var(--muted)"><span class="dot"></span> آنلاین</div>
+            </div>
+          </div>
+          <div class="chat-body" id="chatBody">
+            <div class="msg"><div class="bubble"><p>سلام قهرمان! 💪 من مربی هوشمندتم.</p><p>بر اساس تمرین‌هات برنامه می‌دم، فرم یاد می‌دم و انگیزه می‌دم. بگو چی می‌خوای؟</p></div></div>
+          </div>
+          <div class="chat-foot">
+            <div class="chips">
+              <button class="chip" data-m="برنامه فول بادی">فول بادی</button>
+              <button class="chip" data-m="برنامه سینه">سینه</button>
+              <button class="chip" data-m="برنامه پا">پا</button>
+              <button class="chip" data-m="نکته فرم">فرم</button>
+              <button class="chip" data-m="تحلیل پیشرفتم">تحلیل من</button>
+              <button class="chip" data-m="انگیزه بده">انگیزه</button>
+            </div>
+            <div class="input-bar">
+              <input type="text" id="chatIn" placeholder="پیامت رو بنویس...">
+              <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settings" class="section">
+        <div class="panel">
+          <div class="panel-head"><h3><i class="fas fa-user"></i> پروفایل</h3></div>
+          <div class="field"><label>نام نمایشی</label><input type="text" id="setName" placeholder="قهرمان"></div>
+          <div class="field"><label>سطح</label>
+            <select id="setLevel"><option>مبتدی</option><option selected>متوسط</option><option>پیشرفته</option></select>
+          </div>
+          <div class="field"><label>هدف جلسه در هفته</label><input type="number" id="setGoal" value="4" min="1" max="7"></div>
+          <button class="btn btn-primary" onclick="saveSettings()"><i class="fas fa-save"></i> ذخیره</button>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3><i class="fas fa-sliders"></i> تنظیمات</h3></div>
+          <div class="set-row">
+            <div><strong>تم روشن</strong><div style="font-size:.8rem;color:var(--muted)">تغییر ظاهر</div></div>
+            <div class="switch" id="swTheme" onclick="toggleTheme()"></div>
+          </div>
+          <div class="set-row">
+            <div><strong>یادآوری تمرین</strong><div style="font-size:.8rem;color:var(--muted)">نوتیفیکیشن مرورگر</div></div>
+            <div class="switch" id="swNotif" onclick="toggleNotif()"></div>
+          </div>
+          <div class="set-row">
+            <div><strong>استراحت پیش‌فرض</strong></div>
+            <input type="number" id="setRest" value="90" min="30" max="300" style="width:80px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px;color:var(--text)"> ثانیه
+          </div>
+        </div>
+        <div class="panel">
+          <button class="btn btn-danger btn-full" onclick="if(confirm('همه داده‌ها پاک بشه؟')){localStorage.clear();location.reload()}"><i class="fas fa-trash"></i> پاک کردن همه داده‌ها</button>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- Rest Timer Overlay -->
+<div class="timer-overlay" id="timerOverlay">
+  <div class="timer-box">
+    <div class="timer-label">استراحت</div>
+    <div class="timer-num" id="timerNum">90</div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+      <button class="btn btn-ghost btn-sm" onclick="skipTimer()">رد کردن</button>
+      <button class="btn btn-primary btn-sm" onclick="addTimer(30)">+۳۰ ثانیه</button>
+    </div>
+  </div>
+</div>
+
+<!-- Live session bar -->
+<div class="live-bar" id="liveBar">
+  <div class="live-inner">
+    <div class="live-info">
+      <strong id="liveExName">—</strong>
+      <span id="liveExMeta">ست ۱ از ۳</span>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="openTimer()"><i class="fas fa-clock"></i> تایمر</button>
+    <button class="btn btn-primary btn-sm" onclick="completeSet()"><i class="fas fa-check"></i> ست انجام شد</button>
+    <button class="btn btn-danger btn-sm" onclick="endLive()"><i class="fas fa-stop"></i> پایان</button>
+  </div>
+</div>
+
+<script>
+// ========== STORAGE ==========
+const DB = {
+  get(k, d) { try { return JSON.parse(localStorage.getItem('fb_'+k)) ?? d; } catch { return d; } },
+  set(k, v) { localStorage.setItem('fb_'+k, JSON.stringify(v)); }
+};
+
+let workouts = DB.get('workouts', []);
+let bodyLogs = DB.get('body', []);
+let settings = DB.get('settings', { name:'قهرمان', level:'متوسط', goal:4, rest:90, theme:'dark', notif:false });
+let queue = [];
+let live = null; // { items, idx, setIdx }
+let timerInterval = null, timerLeft = 0;
+let volChart, musChart;
+
+const titles = {
+  dashboard:'داشبورد', live:'تمرین زنده', workouts:'ثبت تمرین', programs:'برنامه‌ها',
+  library:'کتابخانه حرکات', progress:'پیشرفت', body:'بدن و اندازه‌ها', coach:'مربی AI', settings:'تنظیمات'
+};
+
+// ========== PROGRAMS ==========
+const PROGRAMS = [
+  {
+    id:'fb3', name:'فول‌بادی ۳ روزه', days:3, level:'مبتدی', desc:'مناسب شروع و ریکاوری خوب',
+    exercises:[
+      { name:'اسکوات', sets:3, reps:10, muscle:'پا' },
+      { name:'پرس سینه دمبل', sets:3, reps:10, muscle:'سینه' },
+      { name:'زیربغل سیم‌کش', sets:3, reps:10, muscle:'پشت' },
+      { name:'پرس سرشانه', sets:3, reps:12, muscle:'شانه' },
+      { name:'پلانک', sets:3, reps:45, muscle:'شکم' }
+    ]
+  },
+  {
+    id:'ppl', name:'پوش / پول / لگ', days:6, level:'متوسط', desc:'اسپلیت کلاسیک حجم و قدرت',
+    exercises:[
+      { name:'پرس سینه هالتر', sets:4, reps:8, muscle:'سینه' },
+      { name:'پرس بالاسینه', sets:3, reps:10, muscle:'سینه' },
+      { name:'دیپ', sets:3, reps:10, muscle:'سینه' },
+      { name:'پرس نظامی', sets:4, reps:8, muscle:'شانه' },
+      { name:'پشت‌بازو سیم‌کش', sets:3, reps:12, muscle:'بازو' }
+    ]
+  },
+  {
+    id:'legs', name:'روز پا سنگین', days:1, level:'پیشرفته', desc:'تمرکز کامل پایین‌تنه',
+    exercises:[
+      { name:'اسکوات هالتر', sets:4, reps:6, muscle:'پا' },
+      { name:'ددلیفت رومانیایی', sets:3, reps:8, muscle:'پا' },
+      { name:'لانگ', sets:3, reps:10, muscle:'پا' },
+      { name:'پشت پا', sets:3, reps:12, muscle:'پا' },
+      { name:'ساق پا', sets:4, reps:15, muscle:'پا' }
+    ]
+  },
+  {
+    id:'upper', name:'بالاتنه', days:1, level:'متوسط', desc:'سینه پشت شانه بازو',
+    exercises:[
+      { name:'پرس سینه', sets:4, reps:8, muscle:'سینه' },
+      { name:'بارفیکس', sets:3, reps:8, muscle:'پشت' },
+      { name:'روئینگ', sets:3, reps:10, muscle:'پشت' },
+      { name:'نشر جانب', sets:3, reps:15, muscle:'شانه' },
+      { name:'جلوبازو هالتر', sets:3, reps:10, muscle:'بازو' }
+    ]
+  },
+  {
+    id:'core', name:'شکم و میان‌تنه', days:1, level:'همه', desc:'۱۵–۲۰ دقیقه',
+    exercises:[
+      { name:'کرانچ', sets:3, reps:20, muscle:'شکم' },
+      { name:'لگ‌ریز', sets:3, reps:15, muscle:'شکم' },
+      { name:'پلانک', sets:3, reps:60, muscle:'شکم' },
+      { name:'بایسکل', sets:3, reps:20, muscle:'شکم' }
+    ]
+  },
+  {
+    id:'beginner', name:'شروع ۳۰ روزه', days:3, level:'مبتدی', desc:'حرکات پایه با فرم صحیح',
+    exercises:[
+      { name:'اسکوات وزن بدن', sets:3, reps:12, muscle:'پا' },
+      { name:'شنا سوئدی', sets:3, reps:10, muscle:'سینه' },
+      { name:'رد داگ', sets:3, reps:12, muscle:'پشت' },
+      { name:'پلانک', sets:3, reps:30, muscle:'شکم' }
+    ]
+  }
+];
+
+// ========== LIBRARY ==========
+const LIBRARY = [
+  { name:'پرس سینه هالتر', muscle:'سینه', tip:'کتف‌ها را جمع کن، کمر کمی قوس، میله تا سینه پایین بیاید.' },
+  { name:'پرس بالاسینه دمبل', muscle:'سینه', tip:'زاویه نیمکت ۳۰–۴۵ درجه. دمبل‌ها را کنترل‌شده بالا ببر.' },
+  { name:'فلای سیم‌کش', muscle:'سینه', tip:'آرنج کمی خم، حرکت از شانه‌ها نه از بازو.' },
+  { name:'اسکوات هالتر', muscle:'پا', tip:'زانو هم‌جهت پنجه پا، باسن عقب، عمق حداقل موازی.' },
+  { name:'ددلیفت', muscle:'پشت/پا', tip:'پشت صاف، میله نزدیک بدن، از پا هل بده نه از کمر.' },
+  { name:'لانگ', muscle:'پا', tip:'گام بلند، زانوی جلو از پنجه جلو نزند.' },
+  { name:'بارفیکس', muscle:'پشت', tip:'سینه را به سمت میله بکش، کتف‌ها را پایین نگه دار.' },
+  { name:'روئینگ هالتر', muscle:'پشت', tip:'تنه ثابت، آرنج‌ها عقب، کتف‌ها را جمع کن.' },
+  { name:'لت‌پول‌داون', muscle:'پشت', tip:'میله تا ترقوه، نه پشت گردن.' },
+  { name:'پرس نظامی', muscle:'شانه', tip:'هسته بدن سفت، از قفل کامل آرنج خودداری کن.' },
+  { name:'نشر جانب', muscle:'شانه', tip:'آرنج کمی خم، تا سطح شانه بالا بیاور.' },
+  { name:'جلوبازو هالتر', muscle:'بازو', tip:'آرنج ثابت کنار بدن، تاب نده.' },
+  { name:'پشت‌بازو سیم‌کش', muscle:'بازو', tip:'آرنج چسبیده به بدن، فقط ساعد حرکت کند.' },
+  { name:'پلانک', muscle:'شکم', tip:'بدن در یک خط، باسن بالا یا پایین نباشد.' },
+  { name:'کرانچ', muscle:'شکم', tip:'شانه‌ها از زمین جدا شود، گردن را نکش.' },
+  { name:'هیپ تراست', muscle:'باسن/پا', tip:'چانه جمع، در بالا باسن را کامل منقبض کن.' }
+];
+
+// ========== NAV ==========
+function showS(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+  document.querySelector(`[data-s="${id}"]`)?.classList.add('active');
+  document.getElementById('pageTitle').textContent = titles[id] || id;
+  document.getElementById('sidebar').classList.remove('open');
+  if (id === 'dashboard') updateDash();
+  if (id === 'progress') { updateCharts(); renderPRs(); renderCal(); }
+  if (id === 'workouts') renderWList();
+  if (id === 'programs') renderPrograms();
+  if (id === 'library') renderLib();
+  if (id === 'body') renderBody();
+  if (id === 'settings') loadSettingsUI();
+  if (id === 'live') renderQueue();
+}
+document.querySelectorAll('.nav-btn').forEach(b => b.onclick = () => showS(b.dataset.s));
+document.getElementById('menuBtn').onclick = () => document.getElementById('sidebar').classList.toggle('open');
+
+// ========== WORKOUTS ==========
+document.getElementById('wDate').valueAsDate = new Date();
+document.getElementById('bDate').valueAsDate = new Date();
+
+document.getElementById('wForm').onsubmit = e => {
+  e.preventDefault();
+  const w = {
+    id: Date.now(),
+    date: document.getElementById('wDate').value,
+    muscle: document.getElementById('wMuscle').value,
+    exercise: document.getElementById('wEx').value.trim(),
+    sets: +document.getElementById('wSets').value,
+    reps: +document.getElementById('wReps').value,
+    weight: +document.getElementById('wWeight').value,
+    notes: document.getElementById('wNotes').value.trim(),
+    volume: +document.getElementById('wSets').value * +document.getElementById('wReps').value * +document.getElementById('wWeight').value
+  };
+  workouts.unshift(w);
+  DB.set('workouts', workouts);
+  checkPR(w);
+  document.getElementById('wEx').value = '';
+  document.getElementById('wNotes').value = '';
+  renderWList();
+  updateDash();
+  alert('✅ تمرین ذخیره شد' + (w._pr ? ' — رکورد جدید! 🏆' : ''));
+};
+
+function checkPR(w) {
+  const prs = DB.get('prs', {});
+  const key = w.exercise.toLowerCase();
+  const prev = prs[key];
+  if (!prev || w.weight > prev.weight || (w.weight === prev.weight && w.reps > prev.reps)) {
+    prs[key] = { exercise: w.exercise, weight: w.weight, reps: w.reps, sets: w.sets, date: w.date };
+    DB.set('prs', prs);
+    w._pr = true;
+  }
+}
+
+function renderWList() {
+  const el = document.getElementById('wList');
+  if (!workouts.length) { el.innerHTML = '<div class="empty"><i class="fas fa-clipboard-list"></i><p>خالی است</p></div>'; return; }
+  el.innerHTML = workouts.map(w => `
+    <div class="item">
+      <div>
+        <h4>${w.exercise}</h4>
+        <div class="meta">
+          <span class="tag">${w.muscle}</span>
+          <span>${fmtDate(w.date)}</span>
+          <span>${w.sets}×${w.reps} @ ${w.weight}kg</span>
+          <span>حجم: ${w.volume.toLocaleString()}</span>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-danger" onclick="delW(${w.id})"><i class="fas fa-trash"></i></button>
+    </div>
+  `).join('');
+}
+function delW(id) {
+  if (!confirm('حذف؟')) return;
+  workouts = workouts.filter(w => w.id !== id);
+  DB.set('workouts', workouts);
+  renderWList(); updateDash();
+}
+function clearAllW() {
+  if (!confirm('همه تمرینات پاک بشن؟')) return;
+  workouts = []; DB.set('workouts', []);
+  renderWList(); updateDash();
+}
+
+// ========== DASHBOARD ==========
+function updateDash() {
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+  const thisWeek = workouts.filter(w => new Date(w.date) >= weekAgo);
+  const weekSessions = new Set(thisWeek.map(w => w.date)).size;
+  const vol = workouts.reduce((s,w) => s + (w.volume||0), 0);
+  document.getElementById('stTotal').textContent = workouts.length;
+  document.getElementById('stWeek').textContent = weekSessions;
+  document.getElementById('stVol').textContent = vol.toLocaleString();
+  document.getElementById('stStreak').textContent = calcStreak();
+  const goal = settings.goal || 4;
+  const pct = Math.min(100, Math.round(weekSessions / goal * 100));
+  document.getElementById('weekPct').textContent = pct + '%';
+  document.getElementById('weekRing').style.strokeDashoffset = 327 - (327 * pct / 100);
+  document.getElementById('goalText').textContent = `${weekSessions} / ${goal} جلسه`;
+  document.getElementById('goalFill').style.width = pct + '%';
+  document.getElementById('greet').textContent = `سلام ${settings.name || 'قهرمان'} 👋`;
+  document.getElementById('userName').textContent = settings.name || 'قهرمان';
+  document.getElementById('userLevel').textContent = 'سطح: ' + (settings.level || 'متوسط');
+
+  const recent = document.getElementById('recentList');
+  if (!workouts.length) recent.innerHTML = '<div class="empty"><i class="fas fa-dumbbell"></i><p>هنوز تمرینی نیست</p></div>';
+  else recent.innerHTML = workouts.slice(0,5).map(w => `
+    <div class="item"><div><h4>${w.exercise}</h4><div class="meta"><span class="tag">${w.muscle}</span><span>${fmtDate(w.date)}</span><span>${w.sets}×${w.reps}</span></div></div></div>
+  `).join('');
+
+  const prs = Object.values(DB.get('prs', {}));
+  const prEl = document.getElementById('prPreview');
+  if (!prs.length) prEl.innerHTML = '<div class="empty"><i class="fas fa-medal"></i><p>رکوردی نیست</p></div>';
+  else prEl.innerHTML = prs.slice(-5).reverse().map(p => `
+    <div class="pr-item"><span>${p.exercise}</span><span class="pr-val">${p.weight} kg × ${p.reps}</span></div>
+  `).join('');
+}
+
+function calcStreak() {
+  if (!workouts.length) return 0;
+  const dates = [...new Set(workouts.map(w => w.date))].sort().reverse();
+  let streak = 0, cur = new Date(); cur.setHours(0,0,0,0);
+  for (const d of dates) {
+    const wd = new Date(d); wd.setHours(0,0,0,0);
+    const diff = Math.floor((cur - wd) / 86400000);
+    if (diff === streak) { streak++; cur.setDate(cur.getDate()-1); }
+    else if (diff > streak) break;
+  }
+  return streak;
+}
+
+// ========== LIVE + TIMER ==========
+function addToQueue() {
+  const name = document.getElementById('lqEx').value.trim();
+  if (!name) return alert('نام حرکت را وارد کن');
+  queue.push({
+    name,
+    sets: +document.getElementById('lqSets').value,
+    reps: +document.getElementById('lqReps').value,
+    weight: +document.getElementById('lqW').value,
+    muscle: 'فول بادی'
+  });
+  document.getElementById('lqEx').value = '';
+  renderQueue();
+}
+function clearQueue() { queue = []; renderQueue(); }
+function renderQueue() {
+  const el = document.getElementById('liveQueue');
+  if (!queue.length) { el.innerHTML = '<div class="empty" style="padding:16px"><p>صف خالی است</p></div>'; return; }
+  el.innerHTML = queue.map((q,i) => `
+    <div class="item">
+      <div><h4>${i+1}. ${q.name}</h4><div class="meta"><span>${q.sets} ست × ${q.reps}</span><span>${q.weight} kg</span></div></div>
+      <button class="btn btn-sm btn-danger" onclick="queue.splice(${i},1);renderQueue()"><i class="fas fa-times"></i></button>
+    </div>
+  `).join('');
+}
+function loadProgToQueue(id) {
+  const p = PROGRAMS.find(x => x.id === id);
+  if (!p) return;
+  queue = p.exercises.map(e => ({ ...e, weight: 20 }));
+  renderQueue();
+  showS('live');
+  alert('برنامه «' + p.name + '» به صف اضافه شد. وزن‌ها را تنظیم کن و شروع کن.');
+}
+function startLive() {
+  if (!queue.length) return alert('اول حرکت به صف اضافه کن یا یک برنامه انتخاب کن');
+  live = { items: JSON.parse(JSON.stringify(queue)), idx: 0, setIdx: 0 };
+  document.getElementById('liveBar').classList.add('show');
+  updateLiveUI();
+  showS('live');
+}
+function updateLiveUI() {
+  if (!live) return;
+  const ex = live.items[live.idx];
+  document.getElementById('liveExName').textContent = ex.name;
+  document.getElementById('liveExMeta').textContent = `ست ${live.setIdx+1} از ${ex.sets} · هدف ${ex.reps} تکرار · ${ex.weight}kg`;
+}
+function completeSet() {
+  if (!live) return;
+  const ex = live.items[live.idx];
+  // log this set as workout entry (aggregated at end of exercise)
+  live.setIdx++;
+  if (live.setIdx >= ex.sets) {
+    // save exercise
+    const w = {
+      id: Date.now() + live.idx,
+      date: new Date().toISOString().slice(0,10),
+      muscle: ex.muscle || 'فول بادی',
+      exercise: ex.name,
+      sets: ex.sets,
+      reps: ex.reps,
+      weight: ex.weight,
+      notes: 'از تمرین زنده',
+      volume: ex.sets * ex.reps * ex.weight
+    };
+    workouts.unshift(w);
+    DB.set('workouts', workouts);
+    checkPR(w);
+    live.idx++;
+    live.setIdx = 0;
+    if (live.idx >= live.items.length) {
+      endLive();
+      alert('🎉 جلسه تمام شد! آفرین قهرمان');
+      updateDash();
+      return;
+    }
+  }
+  updateLiveUI();
+  openTimer();
+}
+function endLive() {
+  live = null;
+  document.getElementById('liveBar').classList.remove('show');
+  closeTimer();
+  updateDash();
+}
+function openTimer() {
+  timerLeft = +(document.getElementById('restSec')?.value || settings.rest || 90);
+  document.getElementById('timerNum').textContent = timerLeft;
+  document.getElementById('timerOverlay').classList.add('show');
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timerLeft--;
+    document.getElementById('timerNum').textContent = timerLeft;
+    if (timerLeft <= 0) {
+      closeTimer();
+      if (navigator.vibrate) navigator.vibrate([200,100,200]);
+      try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleRwiSJrU6KdgHAk+mtn1qGUdCTyZ2O6oYh0KPJnY7qhiHQo8mdjuqGIdCjyZ2O6oYh0K').play(); } catch{}
+    }
+  }, 1000);
+}
+function closeTimer() {
+  clearInterval(timerInterval);
+  document.getElementById('timerOverlay').classList.remove('show');
+}
+function skipTimer() { closeTimer(); }
+function addTimer(s) { timerLeft += s; document.getElementById('timerNum').textContent = timerLeft; }
+
+// ========== PROGRAMS UI ==========
+function renderPrograms() {
+  const sel = document.getElementById('liveProg');
+  sel.innerHTML = '<option value="">— دستی —</option>' + PROGRAMS.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  sel.onchange = () => { if (sel.value) loadProgToQueue(sel.value); };
+  document.getElementById('progGrid').innerHTML = PROGRAMS.map(p => `
+    <div class="prog-card">
+      <h4>${p.name}</h4>
+      <p>${p.desc}</p>
+      <div class="prog-meta"><span><i class="fas fa-calendar"></i> ${p.days} روز</span><span><i class="fas fa-signal"></i> ${p.level}</span><span>${p.exercises.length} حرکت</span></div>
+      <button class="btn btn-primary btn-sm btn-full" onclick="loadProgToQueue('${p.id}')"><i class="fas fa-play"></i> شروع این برنامه</button>
+    </div>
+  `).join('');
+}
+
+// ========== LIBRARY ==========
+function renderLib(q='') {
+  const list = LIBRARY.filter(e => !q || e.name.includes(q) || e.muscle.includes(q));
+  document.getElementById('libGrid').innerHTML = list.map(e => `
+    <div class="ex-card">
+      <h4>${e.name}</h4>
+      <div class="muscles">${e.muscle}</div>
+      <p>${e.tip}</p>
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="document.getElementById('wEx').value='${e.name}';document.getElementById('wMuscle').value='${e.muscle.split('/')[0]}';showS('workouts')"><i class="fas fa-plus"></i> ثبت این حرکت</button>
+    </div>
+  `).join('') || '<div class="empty"><p>چیزی پیدا نشد</p></div>';
+}
+document.getElementById('libSearch').oninput = e => renderLib(e.target.value.trim());
+
+// ========== PROGRESS ==========
+function updateCharts() {
+  const byDate = {};
+  workouts.forEach(w => { byDate[w.date] = (byDate[w.date]||0) + (w.volume||0); });
+  const dates = Object.keys(byDate).sort();
+  const ctx1 = document.getElementById('volChart')?.getContext('2d');
+  if (ctx1) {
+    if (volChart) volChart.destroy();
+    volChart = new Chart(ctx1, {
+      type:'line',
+      data:{ labels:dates.map(fmtDate), datasets:[{ label:'حجم (kg)', data:dates.map(d=>byDate[d]), borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,.1)', fill:true, tension:.35, pointRadius:4 }] },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ color:'#94a3b8', font:{ family:'Vazirmatn' } } } },
+        scales:{ x:{ ticks:{ color:'#64748b' }, grid:{ color:'rgba(255,255,255,.04)' } }, y:{ ticks:{ color:'#64748b' }, grid:{ color:'rgba(255,255,255,.04)' } } } }
+    });
+  }
+  const byM = {};
+  workouts.forEach(w => { byM[w.muscle] = (byM[w.muscle]||0) + (w.volume||0); });
+  const cols = ['#22c55e','#06b6d4','#a855f7','#f97316','#ec4899','#eab308','#3b82f6','#14b8a6'];
+  const ctx2 = document.getElementById('musChart')?.getContext('2d');
+  if (ctx2) {
+    if (musChart) musChart.destroy();
+    musChart = new Chart(ctx2, {
+      type:'doughnut',
+      data:{ labels:Object.keys(byM), datasets:[{ data:Object.values(byM), backgroundColor:cols, borderWidth:0 }] },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ color:'#94a3b8', font:{ family:'Vazirmatn' }, padding:10 } } } }
+    });
+  }
+}
+function renderPRs() {
+  const prs = Object.values(DB.get('prs', {}));
+  const el = document.getElementById('prList');
+  if (!prs.length) { el.innerHTML = '<div class="empty"><p>هنوز رکوردی نیست. با ثبت تمرین سنگین‌تر ساخته می‌شه.</p></div>'; return; }
+  el.innerHTML = prs.sort((a,b)=>b.weight-a.weight).map(p => `
+    <div class="pr-item"><div><strong>${p.exercise}</strong><div style="font-size:.75rem;color:var(--muted)">${fmtDate(p.date)}</div></div><div class="pr-val">${p.weight} kg × ${p.reps}</div></div>
+  `).join('');
+}
+function renderCal() {
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  const first = new Date(y, m, 1).getDay();
+  const days = new Date(y, m+1, 0).getDate();
+  const done = new Set(workouts.filter(w => { const d=new Date(w.date); return d.getMonth()===m && d.getFullYear()===y; }).map(w => new Date(w.date).getDate()));
+  const heads = ['ی','د','س','چ','پ','ج','ش'];
+  document.getElementById('calHead').innerHTML = heads.map(h => `<div class="cal-head">${h}</div>`).join('');
+  let html = '';
+  const start = (first + 1) % 7; // adjust for Sat start roughly
+  for (let i=0;i<start;i++) html += '<div class="cal-day" style="opacity:.3"></div>';
+  for (let d=1;d<=days;d++) {
+    const isToday = d === now.getDate();
+    const isDone = done.has(d);
+    html += `<div class="cal-day ${isDone?'done':''} ${isToday?'today':''}">${d}</div>`;
+  }
+  document.getElementById('calBody').innerHTML = html;
+}
+function exportSummary() {
+  const vol = workouts.reduce((s,w)=>s+(w.volume||0),0);
+  const prs = Object.values(DB.get('prs',{}));
+  const text = `📊 خلاصه Fit Body — ${settings.name}\n` +
+    `تمرینات: ${workouts.length}\nحجم کل: ${vol.toLocaleString()} kg\nاستریک: ${calcStreak()} روز\n` +
+    `رکوردها: ${prs.length}\n` +
+    prs.slice(0,5).map(p => `• ${p.exercise}: ${p.weight}kg`).join('\n') +
+    `\n\nساخته‌شده با Fit Body Pro`;
+  navigator.clipboard.writeText(text).then(() => alert('خلاصه کپی شد! می‌تونی تو استوری یا تلگرام بذاری.')).catch(() => prompt('کپی کن:', text));
+}
+
+// ========== BODY ==========
+function saveBody() {
+  const log = {
+    id: Date.now(),
+    date: document.getElementById('bDate').value || new Date().toISOString().slice(0,10),
+    weight: +document.getElementById('bWeight').value || null,
+    chest: +document.getElementById('bChest').value || null,
+    arm: +document.getElementById('bArm').value || null,
+    waist: +document.getElementById('bWaist').value || null,
+    thigh: +document.getElementById('bThigh').value || null
+  };
+  if (!log.weight && !log.chest && !log.arm) return alert('حداقل یک مقدار وارد کن');
+  bodyLogs.unshift(log);
+  DB.set('body', bodyLogs);
+  renderBody();
+  alert('ذخیره شد');
+}
+function renderBody() {
+  const el = document.getElementById('bodyList');
+  if (!bodyLogs.length) { el.innerHTML = '<div class="empty"><p>هنوز اندازه‌ای ثبت نشده</p></div>'; return; }
+  el.innerHTML = bodyLogs.map(b => `
+    <div class="item">
+      <div>
+        <h4>${fmtDate(b.date)}</h4>
+        <div class="meta">
+          ${b.weight?`<span>وزن: ${b.weight}kg</span>`:''}
+          ${b.chest?`<span>سینه: ${b.chest}</span>`:''}
+          ${b.arm?`<span>بازو: ${b.arm}</span>`:''}
+          ${b.waist?`<span>کمر: ${b.waist}</span>`:''}
+          ${b.thigh?`<span>ران: ${b.thigh}</span>`:''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ========== COACH ==========
+function getCoachReply(msg) {
+  const m = msg.toLowerCase();
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+  const weekCount = new Set(workouts.filter(w => new Date(w.date) >= weekAgo).map(w => w.date)).size;
+  const totalVol = workouts.reduce((s,w)=>s+(w.volume||0),0);
+  const topMuscle = (() => {
+    const map = {};
+    workouts.forEach(w => map[w.muscle]=(map[w.muscle]||0)+(w.volume||0));
+    return Object.entries(map).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+  })();
+
+  if (m.includes('تحلیل') || m.includes('پیشرفت')) {
+    return `📈 <strong>تحلیل وضعیت تو:</strong><br>
+• تعداد کل تمرینات: <b>${workouts.length}</b><br>
+• جلسات این هفته: <b>${weekCount}</b> از ${settings.goal}<br>
+• حجم کل: <b>${totalVol.toLocaleString()} kg</b><br>
+• عضله پرتکرار: <b>${topMuscle}</b><br>
+• استریک: <b>${calcStreak()}</b> روز<br><br>
+${weekCount < settings.goal ? 'این هفته هنوز به هدفت نرسیدی. یه جلسه دیگه بزن! 💪' : 'عالی! هدفت این هفته رو زدی. 🔥'}`;
+  }
+  if (m.includes('فول')) return `💪 <strong>برنامه فول‌بادی ۳ روز:</strong><br>روز۱: اسکوات ۳×۱۰ · پرس سینه ۳×۱۰ · زیربغل ۳×۱۰ · پرس شانه ۳×۱۲ · پلانک ۳×۴۵ث<br>روز۲: ددلیفت ۳×۶ · پرس بالا ۳×۱۰ · بارفیکس ۳×۸ · لانگ ۳×۱۰ · کرانچ ۳×۱۵<br>روز۳: اسکوات بلغاری ۳×۱۰ · پرس نظامی ۳×۱۰ · روئینگ ۳×۱۲ · پشت پا ۳×۱۲<br><br>می‌تونی از بخش <b>برنامه‌ها</b> هم مستقیم شروع کنی.`;
+  if (m.includes('سینه')) return `🔥 <strong>سینه:</strong><br>پرس سینه ۴×۶-۸ · پرس بالاسینه ۳×۱۰ · فلای ۳×۱۲ · دیپ ۳×۱۰<br>نکته: آرنج حدود ۴۵ درجه، کتف جمع.`;
+  if (m.includes('پا')||m.includes('اسکوات')) return `🦵 <strong>پا:</strong><br>اسکوات ۴×۶ · لانگ ۳×۱۰ · پشت پا ۳×۱۲ · جلو پا ۳×۱۲ · ساق ۴×۱۵ · هیپ تراست ۳×۱۲`;
+  if (m.includes('پشت')) return `🏋️ <strong>پشت:</strong><br>ددلیفت ۳×۵ · بارفیکس ۴×۸ · روئینگ ۳×۱۰ · لت ۳×۱۰ · فیله کمر ۳×۱۲`;
+  if (m.includes('فرم')) return `📝 فرم درست = پیشرفت بدون آسیب.<br>• کنترل کامل وزنه<br>• ستون فقرات خنثی<br>• بازدم موقع فشار<br>• دامنه کامل<br>از <b>کتابخانه حرکات</b> هم می‌تونی نکته هر حرکت رو ببینی.`;
+  if (m.includes('انگیزه')||m.includes('خسته')) return `🚀 قهرمان، بدنی که می‌خوای از همون تکراری ساخته می‌شه که امروز سخت به نظر می‌رسه.<br>فقط همین یک ست دیگه. من اینجام. برو بترکون! 💪🔥`;
+  if (m.includes('تغذیه')||m.includes('پروتئین')) return `🍗 پروتئین ۱.۶–۲.۲ گرم به ازای هر کیلو وزن بدن · کالری کمی بیشتر از مصرف برای حجم · آب ۳–۴ لیتر · بعد تمرین پنجره طلایی.`;
+  if (m.includes('سلام')||m.includes('درود')) return `سلام ${settings.name}! 💪 بگو امروز کدوم عضله یا چه کمکی لازم داری؟`;
+  return `متوجه شدم. می‌تونی بگی:<br>• برنامه فول بادی / سینه / پا<br>• تحلیل پیشرفتم<br>• نکته فرم · انگیزه · تغذیه<br>یا از بخش برنامه‌ها یک برنامه آماده شروع کن.`;
+}
+function addChat(text, user=false) {
+  const div = document.createElement('div');
+  div.className = 'msg' + (user?' user':'');
+  div.innerHTML = `<div class="bubble">${user?`<p>${text}</p>`:text}</div>`;
+  document.getElementById('chatBody').appendChild(div);
+  document.getElementById('chatBody').scrollTop = 99999;
+}
+function sendChat() {
+  const inp = document.getElementById('chatIn');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  addChat(msg, true);
+  inp.value = '';
+  setTimeout(() => addChat(getCoachReply(msg)), 500);
+}
+document.getElementById('chatSend').onclick = sendChat;
+document.getElementById('chatIn').onkeypress = e => { if (e.key==='Enter') sendChat(); };
+document.querySelectorAll('.chip').forEach(c => c.onclick = () => { document.getElementById('chatIn').value = c.dataset.m; sendChat(); });
+
+// ========== SETTINGS ==========
+function loadSettingsUI() {
+  document.getElementById('setName').value = settings.name || '';
+  document.getElementById('setLevel').value = settings.level || 'متوسط';
+  document.getElementById('setGoal').value = settings.goal || 4;
+  document.getElementById('setRest').value = settings.rest || 90;
+  document.getElementById('swTheme').classList.toggle('on', settings.theme === 'light');
+  document.getElementById('swNotif').classList.toggle('on', !!settings.notif);
+}
+function saveSettings() {
+  settings.name = document.getElementById('setName').value.trim() || 'قهرمان';
+  settings.level = document.getElementById('setLevel').value;
+  settings.goal = +document.getElementById('setGoal').value || 4;
+  settings.rest = +document.getElementById('setRest').value || 90;
+  DB.set('settings', settings);
+  document.getElementById('restSec').value = settings.rest;
+  updateDash();
+  alert('ذخیره شد');
+}
+function toggleTheme() {
+  settings.theme = settings.theme === 'light' ? 'dark' : 'light';
+  DB.set('settings', settings);
+  applyTheme();
+  document.getElementById('swTheme').classList.toggle('on', settings.theme==='light');
+}
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', settings.theme === 'light' ? 'light' : 'dark');
+  document.getElementById('themeBtn').innerHTML = settings.theme==='light' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+}
+document.getElementById('themeBtn').onclick = toggleTheme;
+
+function toggleNotif() {
+  if (!settings.notif) {
+    Notification.requestPermission().then(p => {
+      settings.notif = p === 'granted';
+      DB.set('settings', settings);
+      document.getElementById('swNotif').classList.toggle('on', settings.notif);
+      if (settings.notif) new Notification('Fit Body', { body:'یادآوری تمرین فعال شد 💪' });
+    });
+  } else {
+    settings.notif = false;
+    DB.set('settings', settings);
+    document.getElementById('swNotif').classList.remove('on');
+  }
+}
+document.getElementById('notifBtn').onclick = () => {
+  if (settings.notif && Notification.permission==='granted') {
+    new Notification('وقت تمرینه! 💪', { body:'هدفت این هفته رو یادت نره.' });
+  } else {
+    showS('settings');
+    alert('از تنظیمات یادآوری را فعال کن');
+  }
+};
+
+// ========== HELPERS ==========
+function fmtDate(d) { try { return new Date(d).toLocaleDateString('fa-IR'); } catch { return d; } }
+
+// ========== INIT ==========
+applyTheme();
+document.getElementById('restSec').value = settings.rest || 90;
+renderPrograms();
+updateDash();
+renderWList();
+</script>
+</body>
+</html>
